@@ -1,0 +1,21 @@
+#!/bin/bash
+log="$POC_STATE/iptables.log"
+echo "iptables $*" >> "$log"
+# Detect a default-policy change: -P <CHAIN> <TARGET>
+prev=""
+for a in "$@"; do
+  if [ "$prev" = "-P" ]; then chain="$a"; fi
+  if [ -n "${chain:-}" ] && [ "$prev" = "$chain" ]; then target="$a"; fi
+  prev="$a"
+done
+if printf '%s\n' "$@" | grep -qx -- '-P'; then
+  # parse "-P CHAIN TARGET" positionally
+  args=("$@")
+  for i in "${!args[@]}"; do
+    if [ "${args[$i]}" = "-P" ]; then
+      c="${args[$((i+1))]}"; t="${args[$((i+2))]}"
+      echo "$t" > "$POC_STATE/policy_$c"
+    fi
+  done
+fi
+exit 0

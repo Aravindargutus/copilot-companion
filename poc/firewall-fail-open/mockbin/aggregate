@@ -1,0 +1,3 @@
+#!/bin/bash
+# Real `aggregate` collapses CIDRs; for the harness, pass them through.
+cat

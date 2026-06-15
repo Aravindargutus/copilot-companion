@@ -1,0 +1,22 @@
+#!/bin/bash
+url=""
+for a in "$@"; do case "$a" in https://*|http://*) url="$a";; esac; done
+
+case "$url" in
+  *api.github.com/meta*)
+    if [ "${POC_SCENARIO:-success}" = "fail_meta" ]; then
+      # Simulate GitHub API outage / rate-limit: empty body, success exit.
+      exit 0
+    fi
+    echo '{"web":["192.30.252.0/22"],"api":["140.82.112.0/20"],"git":["143.55.64.0/20"]}'
+    exit 0
+    ;;
+  *example.com*)
+    # Reachable iff egress is NOT restricted (OUTPUT policy still ACCEPT).
+    pol="$(cat "$POC_STATE/policy_OUTPUT" 2>/dev/null || echo ACCEPT)"
+    [ "$pol" = "ACCEPT" ] && exit 0 || exit 7
+    ;;
+  *api.github.com/zen*)
+    exit 0 ;;  # allowlisted
+  *) exit 0 ;;
+esac

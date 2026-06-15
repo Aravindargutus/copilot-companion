@@ -1,0 +1,5 @@
+#!/bin/bash
+# Emulate: dig +noall +answer A <domain>  ->  "<name>. 300 IN A 1.2.3.4"
+domain="${!#}"
+echo "$domain. 300 IN A 1.2.3.4"
+exit 0

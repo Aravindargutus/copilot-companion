@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "ipset $*" >> "$POC_STATE/ipset.log"
+exit 0

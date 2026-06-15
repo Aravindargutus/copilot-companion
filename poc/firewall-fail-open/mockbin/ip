@@ -1,0 +1,5 @@
+#!/bin/bash
+if [ "${1:-}" = "route" ]; then
+  echo "default via 172.17.0.1 dev eth0"
+fi
+exit 0
