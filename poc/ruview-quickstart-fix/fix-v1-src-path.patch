@@ -1,0 +1,27 @@
+diff --git a/wifi_densepose/__init__.py b/wifi_densepose/__init__.py
+index 83d6e20..7622a67 100644
+--- a/wifi_densepose/__init__.py
++++ b/wifi_densepose/__init__.py
+@@ -18,10 +18,18 @@ import logging
+ 
+ logger = logging.getLogger(__name__)
+ 
+-# Allow importing the v1 src package when installed from the repo
+-_v1_src = os.path.join(os.path.dirname(os.path.dirname(__file__)), "v1")
+-if os.path.isdir(_v1_src) and _v1_src not in sys.path:
+-    sys.path.insert(0, _v1_src)
++# Allow importing the v1 src package when installed from the repo.
++# The v1 tree was relocated under archive/v1/ (it still contains the `src`
++# package), so probe that location first and keep the legacy ./v1 path as a
++# fallback for older checkouts.
++_repo_root = os.path.dirname(os.path.dirname(__file__))
++for _v1_src in (
++    os.path.join(_repo_root, "archive", "v1"),
++    os.path.join(_repo_root, "v1"),
++):
++    if os.path.isdir(_v1_src) and _v1_src not in sys.path:
++        sys.path.insert(0, _v1_src)
++        break
+ 
+ 
+ class WiFiDensePose:
